@@ -8,5 +8,6 @@ import (
 
 
 func SetupAccountRoutes(router *echo.Echo) {
-	router.POST("/account/createaccount", controllers.CreateAccount, echo.MiddlewareFunc(middlewares.IsLoggedIn))
+	router.POST("/account/createaccount", controllers.CreateAccount, middlewares.IsLoggedIn)
+	//router.POST("/account/createaccount", controllers.CreateAccount, echo.MiddlewareFunc(middlewares.IsLoggedIn))
 }
