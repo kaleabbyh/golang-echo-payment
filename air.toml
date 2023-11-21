@@ -1,0 +1,14 @@
+# air.toml
+
+# Entrypoint file
+Entrypoint = "main.go"
+
+# Build command
+BuildCmd = "go build -o ./bin/main"
+
+# Run command
+RunCmd = "./bin/main"
+
+# Exclude directories or files from being watched
+ExcludeDirs = ["data", "docs"]
+ExcludeFiles = ["*.log", "*.sql"]
