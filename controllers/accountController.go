@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func CreateAcount(c echo.Context) error {
+func CreateAccount(c echo.Context) error {
 
 	account := new(Account)
 	if err := c.Bind(account); err != nil {
@@ -19,6 +19,10 @@ func CreateAcount(c echo.Context) error {
 		account.UserID == uuid.Nil || 
 		account.Balance == 0 {
 		return echo.NewHTTPError(http.StatusBadRequest, "AccountNumber, Creater, User, and Balance are required fields")
+	}
+
+	if err := db.Create(account).Error; err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Failed to create account", err)
 	}
 
 	return nil

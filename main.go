@@ -10,7 +10,10 @@ import (
 func main() {
 
 	router := echo.New()
+	
 	routes.SetupUserRoutes(router)
+	routes.SetupAccountRoutes(router)
+	
 	router.Start(":8080")
 	
 }
