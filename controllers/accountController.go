@@ -29,7 +29,7 @@ func CreateAccount(c echo.Context) error {
 	}
 	
 	if err := db.Create(account).Error; err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, "Failed to create account", err)
+		return echo.NewHTTPError(http.StatusInternalServerError,err)
 	}
 
 	var user User
@@ -46,4 +46,55 @@ func CreateAccount(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusCreated, response)
+}
+
+
+func GetMyAccounts(c echo.Context) error {
+	userID := c.Get("userID")
+
+	if userID=="" {
+		return echo.NewHTTPError(http.StatusBadRequest, "not authenticated")
+	}
+
+	var accounts []Account
+	result := db.Find(&accounts,"user_id=?",userID)
+    if result.Error != nil {
+        return echo.NewHTTPError(http.StatusBadRequest,  result.Error)       
+    }
+
+	var user User
+	result = db.First(&user,userID)
+    if result.Error != nil {
+        return echo.NewHTTPError(http.StatusBadRequest,  result.Error)       
+    }
+
+	type Response struct {
+		Accounts []Account `json:"accounts"`
+		User     User      `json:"user"`
+	}
+
+	response := Response{
+		Accounts: accounts,
+		User:     user,
+	}
+
+
+	return c.JSON(http.StatusCreated, response)
+}
+
+
+func GetAllAcounts(c echo.Context) error {
+	userID := c.Get("userID")
+
+	if userID=="" {
+		return echo.NewHTTPError(http.StatusBadRequest, "not authenticated")
+	}
+
+	var accounts []Account
+	result := db.Find(&accounts)
+    if result.Error != nil {
+        return echo.NewHTTPError(http.StatusBadRequest,  result.Error)       
+    }
+
+	return c.JSON(http.StatusCreated, accounts)
 }

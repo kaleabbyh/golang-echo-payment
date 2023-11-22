@@ -41,6 +41,7 @@ type LoginData struct {
 	Password string `json:"password"`
 }
 
+
 type Account struct {
 	ID       		uuid.UUID      	`gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
 	CreatedAt		time.Time

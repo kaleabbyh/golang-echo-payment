@@ -23,17 +23,19 @@ func ConnectDB() (*gorm.DB, error) {
 	dbUser	   := os.Getenv("DB_USER")
 	dbPassword := os.Getenv("DB_PASSWORD")
 	dbName	   := os.Getenv("DB_NAME")
+	dbUrl	   := os.Getenv("DB_URL")
 
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		dbHost, dbPort, dbUser, dbPassword, dbName)
+	fmt.Println(dsn)
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dbUrl), &gorm.Config{})
 		if err != nil {
 		log.Fatal("Error  creating user table:", err)
 		return nil, err
 		
 	}
-	fmt.Println("connected successfully")
+	fmt.Println("DB connected successfully")
 	
 	return db, nil
 }
