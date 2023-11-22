@@ -13,6 +13,7 @@ func main() {
 	
 	routes.SetupUserRoutes(router)
 	routes.SetupAccountRoutes(router)
+	routes.SetupPaymentRoutes(router)
 	
 	router.Start(":8080")
 	

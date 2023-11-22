@@ -72,3 +72,17 @@ type Payment struct {
 	UpdatedAt 		time.Time
 	DeletedAt 		gorm.DeletedAt `gorm:"index"`
 }
+
+
+type Transaction struct {
+	ID        			uuid.UUID      `gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
+	CreatedAt 			time.Time
+	UpdatedAt 			time.Time
+	DeletedAt 			gorm.DeletedAt `gorm:"index"`
+	PaymentID 			uuid.UUID      `gorm:"type:uuid;not null"`
+	UserID    			uuid.UUID      `gorm:"type:uuid;not null"`
+	Type      			string  	   `gorm:"not null"`
+	Amount    			float64 	   `gorm:"not null"`
+	TranferedFrom   	string  	   `gorm:"default:null"`
+	TranferedTo  		string   	   `gorm:"default:null"`
+}

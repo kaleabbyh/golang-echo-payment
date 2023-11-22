@@ -11,7 +11,9 @@ import (
 
 func MigrateTables(db *gorm.DB) error {
     err := db.AutoMigrate(models.User{},
-						  models.Account{}, 						  
+						  models.Account{},
+						  models.Payment{}, 
+						  models.Transaction{},						  
 						)
 						
     if err != nil {

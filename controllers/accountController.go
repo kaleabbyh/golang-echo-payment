@@ -16,7 +16,7 @@ func CreateAccount(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "not authenticated")
 	}
 	userIDValue, _ := userID.(uuid.UUID)
-	
+
 	account := new(Account)
 	if err := c.Bind(account); err != nil {
 		 return echo.NewHTTPError(http.StatusBadRequest, "Invalid request payload")
@@ -79,8 +79,6 @@ func GetMyAccounts(c echo.Context) error {
 		Accounts: accounts,
 		User:     user,
 	}
-
-
 	return c.JSON(http.StatusCreated, response)
 }
 
@@ -101,6 +99,7 @@ func GetAllAcounts(c echo.Context) error {
 	return c.JSON(http.StatusCreated, accounts)
 }
 
+
 func DeleteAccount(c echo.Context) error {
 	userID := c.Get("userID")
 
@@ -115,6 +114,7 @@ func DeleteAccount(c echo.Context) error {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return echo.NewHTTPError(http.StatusNotFound, "account not found")
 		}
+
 		return echo.NewHTTPError(http.StatusInternalServerError, result.Error)
 	}
 
@@ -125,9 +125,9 @@ func DeleteAccount(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
+
 func UpdateAccount(c echo.Context) error {
 	userID := c.Get("userID")
-
 	if userID == nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "not authenticated")
 	}
