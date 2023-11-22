@@ -1,10 +1,12 @@
 package controllers
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
+	"gorm.io/gorm"
 )
 
 func CreateAccount(c echo.Context) error {
@@ -97,4 +99,58 @@ func GetAllAcounts(c echo.Context) error {
     }
 
 	return c.JSON(http.StatusCreated, accounts)
+}
+
+func DeleteAccount(c echo.Context) error {
+	userID := c.Get("userID")
+
+	if userID == nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "not authenticated")
+	}
+
+	accountID := c.Param("id")
+	var account Account
+	result := db.First(&account, "id = ?", accountID)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return echo.NewHTTPError(http.StatusNotFound, "account not found")
+		}
+		return echo.NewHTTPError(http.StatusInternalServerError, result.Error)
+	}
+
+	result = db.Delete(&account)
+	if result.Error != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, result.Error)
+	}
+	return c.NoContent(http.StatusNoContent)
+}
+
+func UpdateAccount(c echo.Context) error {
+	userID := c.Get("userID")
+
+	if userID == nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "not authenticated")
+	}
+
+	accountID := c.Param("id")
+
+	var account Account
+	result := db.First(&account, "id = ? AND user_id = ?", accountID, userID)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return echo.NewHTTPError(http.StatusNotFound, "account not found")
+		}
+		return echo.NewHTTPError(http.StatusInternalServerError, result.Error)
+	}
+	
+	if err := c.Bind(&account); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	result = db.Save(&account)
+	if result.Error != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, result.Error)
+	}
+
+	return c.JSON(http.StatusOK, account)
 }

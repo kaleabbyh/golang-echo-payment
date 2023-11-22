@@ -58,3 +58,17 @@ type AccountResponse struct {
 	User     		User    		`json:"user"`
 	Message  		string  		`json:"message"`
 }
+
+type Payment struct {
+	ID        		uuid.UUID      `gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
+    UserID          uuid.UUID      `gorm:"type:uuid;not null"`
+    Amount          float64        `gorm:"not null"`
+    Currency        string         `gorm:"not null"`
+    Reason          string         `gorm:"not null"`
+    Status          string         `gorm:"not null"`
+    ReceiverAccount string         `gorm:"not null"`
+    PayerAccount    string         `gorm:"not null"`
+	CreatedAt 		time.Time
+	UpdatedAt 		time.Time
+	DeletedAt 		gorm.DeletedAt `gorm:"index"`
+}

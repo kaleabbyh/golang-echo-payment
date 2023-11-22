@@ -11,6 +11,8 @@ func SetupAccountRoutes(router *echo.Echo) {
 	router.POST("/account/createaccount", controllers.CreateAccount, middlewares.IsAdmin)
 	router.GET("/account/getallaccounts", controllers.GetAllAcounts, middlewares.IsAdmin)
 	router.GET("/account/getmyaccounts", controllers.GetMyAccounts, middlewares.IsLoggedIn)
+	router.DELETE("/account/deleteaccount/:id", controllers.DeleteAccount, middlewares.IsAdmin)
+	router.PUT("/account/updatemyaccount/:id", controllers.UpdateAccount, middlewares.IsLoggedIn)
 	
 	//router.POST("/account/createaccount", controllers.CreateAccount, echo.MiddlewareFunc(middlewares.IsLoggedIn))
 }
