@@ -45,18 +45,18 @@ func CreatePayment(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, "self account payment is not possible")
 	}
 
-	if err := db.Create(&payment); err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError,err)
+	if err := db.Create(&payment).Error; err != nil {
+		return c.JSON(http.StatusInternalServerError,"unable to create payment")
 	}
 
 	PayerAccount.Balance -= payment.Amount
-	if err := db.Save(&PayerAccount); err!=nil{
-		return echo.NewHTTPError(http.StatusInternalServerError,err)
+	if err := db.Save(&PayerAccount).Error; err!=nil{
+		return c.JSON(http.StatusInternalServerError,"unable to update payer account")
 	}
 
 	ReceiverAccount.Balance += payment.Amount
-	if err := db.Save(&ReceiverAccount); err!=nil{
-		return echo.NewHTTPError(http.StatusInternalServerError,err)
+	if err := db.Save(&ReceiverAccount).Error; err!=nil{
+		return c.JSON(http.StatusInternalServerError,"unable to update reciever account")
 	}
 	
 	payerTransaction := Transaction{
@@ -67,10 +67,10 @@ func CreatePayment(c echo.Context) error {
 		TranferedTo: payment.ReceiverAccount,
 	}
 
-	if err:=db.Create(&payerTransaction); err != nil {
-		return c.JSON(http.StatusInternalServerError,err)
+	if err:=db.Create(&payerTransaction).Error; err != nil {
+		return c.JSON(http.StatusInternalServerError,"unable to update reciever account")
 	}
-
+	
 	recieverTransaction := Transaction{
 		PaymentID:     payment.ID,
 		UserID:        ReceiverAccount.UserID,
@@ -79,7 +79,7 @@ func CreatePayment(c echo.Context) error {
 		Amount:        payment.Amount,
 	}
 
-	if err := db.Create(&recieverTransaction); err != nil {
+	if err := db.Create(&recieverTransaction).Error; err != nil {
 		return c.JSON(http.StatusInternalServerError,err)
 	}
 
